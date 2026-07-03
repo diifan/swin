@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { motion, useReducedMotion, useTransform } from 'motion/react';
 import type { MotionValue } from 'motion/react';
 import Nav from './components/Nav';
@@ -7,9 +7,6 @@ import PillarSection from './components/PillarSection';
 import { useParallax } from './components/useParallax';
 
 export default function App() {
-  // Bumping `heroKey` forces <Hero /> to fully remount, which restarts the
-  // CountUp intro (road tunnel + 0->100) from scratch.
-  const [heroKey, setHeroKey] = useState(0);
   const mainRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const parallax = useParallax(mainRef, !!reduce);
@@ -48,9 +45,9 @@ export default function App() {
 
   return (
     <div className="h-[100dvh] overflow-hidden bg-black text-white">
-      <Nav onLogoClick={() => setHeroKey(k => k + 1)} />
+      <Nav />
       <main ref={mainRef} className="h-[100dvh] overflow-y-scroll">
-        <Hero key={heroKey} parallax={parallax} onScrollNext={() => scrollToSection(1)} />
+        <Hero parallax={parallax} onScrollNext={() => scrollToSection(1)} />
         <PillarSection parallax={parallax} onScrollPrev={() => scrollToSection(0)} />
       </main>
 
