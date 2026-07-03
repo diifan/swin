@@ -49,11 +49,6 @@ type HeroProps = {
   onScrollNext: () => void;
 };
 
-const softIn = {
-  hidden: { opacity: 0, y: 18 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] as const } },
-};
-
 const typeIn = {
   hidden: { opacity: 0, y: 34, filter: 'blur(10px)' },
   show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const } },
@@ -69,7 +64,6 @@ export default function Hero({ parallax, onScrollNext }: HeroProps) {
     setTimeout(() => setPhase('lines'), 500);
   }, []);
 
-  const copyVariant = reduce ? { hidden: {}, show: { opacity: 1 } } : softIn;
   const headlineVariant = reduce ? { hidden: {}, show: { opacity: 1 } } : typeIn;
 
   return (
@@ -165,21 +159,6 @@ export default function Hero({ parallax, onScrollNext }: HeroProps) {
                 show: { transition: { staggerChildren: 0.08, delayChildren: 0.12 } },
               }}
             >
-              <motion.p
-                variants={copyVariant}
-                className="poster-copy pointer-events-auto absolute top-[31%] max-w-[230px] text-left text-xs font-semibold leading-relaxed text-white/78 sm:top-[42%] sm:max-w-[270px] sm:text-sm"
-              >
-                We build embodied intelligence for machines that perceive, move, and adapt in the real world.
-              </motion.p>
-
-              <motion.p
-                variants={copyVariant}
-                className="poster-metric-right absolute top-[14%] hidden text-right text-[clamp(2.35rem,8vw,4.9rem)] font-black leading-none text-white sm:block"
-              >
-                +100
-                <span className="block text-xs font-semibold leading-5 text-white/50 sm:text-sm">launch sequence</span>
-              </motion.p>
-
               <motion.h1
                 variants={headlineVariant}
                 className="poster-word poster-word-build"
@@ -200,23 +179,6 @@ export default function Hero({ parallax, onScrollNext }: HeroProps) {
               >
                 soon
               </motion.div>
-
-              <motion.div
-                variants={copyVariant}
-                className="poster-metric-left pointer-events-auto absolute top-[69%] hidden text-left sm:block"
-              >
-                <p className="text-[clamp(2.1rem,5vw,4rem)] font-black leading-none text-white">01</p>
-                <p className="mt-1 text-xs font-semibold text-white/42">private preview</p>
-              </motion.div>
-
-              <motion.div
-                variants={copyVariant}
-                className="poster-metric-right pointer-events-auto absolute bottom-[7.2rem] hidden text-right sm:block"
-              >
-                <p className="text-[clamp(2.1rem,5vw,4rem)] font-black leading-none text-white">3</p>
-                <p className="mt-1 text-xs font-semibold text-white/42">core systems</p>
-              </motion.div>
-
             </motion.div>
           )}
         </AnimatePresence>
