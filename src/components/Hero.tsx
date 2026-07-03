@@ -159,26 +159,10 @@ export default function Hero({ parallax, onScrollNext }: HeroProps) {
                 show: { transition: { staggerChildren: 0.08, delayChildren: 0.12 } },
               }}
             >
-              <motion.h1
-                variants={headlineVariant}
-                className="poster-word poster-word-build"
-              >
-                Swink
+              <motion.h1 variants={headlineVariant} className="launch-title" aria-label="Swink coming soon">
+                <span>Swink</span>
+                <span>coming soon</span>
               </motion.h1>
-
-              <motion.div
-                variants={headlineVariant}
-                className="poster-word poster-word-your"
-              >
-                coming
-              </motion.div>
-
-              <motion.div
-                variants={headlineVariant}
-                className="poster-word poster-word-ai"
-              >
-                soon
-              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
