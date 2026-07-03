@@ -1,0 +1,9 @@
+.vercel
+node_modules
+dist
+*.log
+*.err
+*.zip
+*.png
+.edge-*
+tsconfig.tsbuildinfo

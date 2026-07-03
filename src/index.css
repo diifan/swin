@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+/* Fonts are imported as JS modules in main.tsx (fontsource recommended approach)
+   to avoid Tailwind v4 @import-order conflicts and dep-optimizer issues. */
+
+@theme {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+
+  /* Single accent color locked across the page 鈥?pure monochrome (black/white/grey). */
+  --color-accent: #ffffff;
+}
+
+@layer base {
+  html {
+    background-color: #000000;
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    font-family: var(--font-sans);
+    background-color: #000000;
+    color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Tactile press feedback for interactive elements */
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer components {
+  .poster-word {
+    position: absolute;
+    z-index: 10;
+    color: #ffffff;
+    font-weight: 900;
+    line-height: 0.78;
+    text-shadow: 0 18px 60px rgb(0 0 0 / 0.65);
+  }
+
+  .poster-word-build {
+    left: 1.6rem;
+    top: 18%;
+    font-size: clamp(4.9rem, 17vw, 14rem);
+  }
+
+  .poster-copy,
+  .poster-metric-left {
+    left: 1.6rem;
+  }
+
+  .poster-word-your {
+    left: 21%;
+    top: 42%;
+    font-size: clamp(3rem, 15vw, 4rem);
+  }
+
+  .poster-metric-right {
+    right: 1.6rem;
+  }
+
+  .poster-word-ai {
+    left: 38%;
+    top: 57%;
+    font-size: clamp(3.9rem, 19vw, 5rem);
+  }
+
+  @media (min-width: 640px) {
+    .poster-word-build {
+      left: 4rem;
+      top: 17%;
+    }
+
+    .poster-copy,
+    .poster-metric-left {
+      left: 4rem;
+    }
+
+    .poster-word-your {
+      left: auto;
+      right: 4rem;
+      top: 40%;
+      font-size: clamp(4rem, 11vw, 9rem);
+    }
+
+    .poster-metric-right {
+      right: 4rem;
+    }
+
+    .poster-word-ai {
+      left: 36%;
+      top: 57%;
+      font-size: clamp(4.8rem, 12vw, 9.5rem);
+    }
+
+  }
+
+  @media (min-width: 1024px) {
+    .poster-word-build {
+      left: 5rem;
+    }
+
+    .poster-copy,
+    .poster-metric-left {
+      left: 5rem;
+    }
+
+    .poster-word-your {
+      right: 5.5rem;
+    }
+
+    .poster-metric-right {
+      right: 5.5rem;
+    }
+  }
+}

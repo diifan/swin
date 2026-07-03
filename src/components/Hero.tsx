@@ -1,0 +1,237 @@
+import { useCallback, useMemo, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import CountUp from './CountUp';
+import FloatingLines from './FloatingLines';
+import Hyperspeed from './Hyperspeed';
+import WebGLBoundary from './WebGLBoundary';
+import type { useParallax } from './useParallax';
+
+const HYPERSPEED_OPTIONS = {
+  distortion: 'turbulentDistortion',
+  length: 400,
+  roadWidth: 10,
+  islandWidth: 2,
+  lanesPerRoad: 3,
+  fov: 90,
+  fovSpeedUp: 150,
+  speedUp: 2,
+  carLightsFade: 0.4,
+  totalSideLightSticks: 20,
+  lightPairsPerRoadWay: 40,
+  shoulderLinesWidthPercentage: 0.05,
+  brokenLinesWidthPercentage: 0.1,
+  brokenLinesLengthPercentage: 0.5,
+  lightStickWidth: [0.12, 0.5],
+  lightStickHeight: [1.3, 1.7],
+  movingAwaySpeed: [60, 80],
+  movingCloserSpeed: [-120, -160],
+  carLightsLength: [400 * 0.03, 400 * 0.2],
+  carLightsRadius: [0.05, 0.14],
+  carWidthPercentage: [0.3, 0.5],
+  carShiftX: [-0.8, 0.8],
+  carFloorSeparation: [0, 5],
+  colors: {
+    roadColor: 0x080808,
+    islandColor: 0x0a0a0a,
+    background: 0x000000,
+    shoulderLines: 0x131318,
+    brokenLines: 0x131318,
+    leftCars: [0xffffff, 0xcbd5e1, 0x94a3b8],
+    rightCars: [0xffffff, 0x94a3b8, 0x6a6a6a],
+    sticks: 0x94a3b8,
+  },
+};
+
+type Phase = 'road' | 'lines';
+
+type HeroProps = {
+  parallax: ReturnType<typeof useParallax>;
+  onScrollNext: () => void;
+};
+
+const softIn = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] as const } },
+};
+
+const typeIn = {
+  hidden: { opacity: 0, y: 34, filter: 'blur(10px)' },
+  show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const } },
+};
+
+export default function Hero({ parallax, onScrollNext }: HeroProps) {
+  const reduce = useReducedMotion();
+  const [phase, setPhase] = useState<Phase>(reduce ? 'lines' : 'road');
+
+  const hyperspeedOptions = useMemo(() => HYPERSPEED_OPTIONS, []);
+
+  const handleCountEnd = useCallback(() => {
+    setTimeout(() => setPhase('lines'), 500);
+  }, []);
+
+  const copyVariant = reduce ? { hidden: {}, show: { opacity: 1 } } : softIn;
+  const headlineVariant = reduce ? { hidden: {}, show: { opacity: 1 } } : typeIn;
+
+  return (
+    <section className="relative flex h-[100dvh] w-full shrink-0 items-center justify-center overflow-hidden bg-black">
+      <motion.div
+        className="absolute inset-0 z-0"
+        style={{ scale: parallax.heroBg.scale, y: parallax.heroBg.y, filter: parallax.heroBg.filter }}
+      >
+        <WebGLBoundary>
+          <AnimatePresence mode="sync">
+            {phase === 'road' ? (
+              <motion.div
+                key="road"
+                className="absolute inset-0"
+                exit={{ opacity: 0, scale: 1.08 }}
+                transition={{ duration: 1.4, ease: [0.4, 0, 0.2, 1] }}
+              >
+                <Hyperspeed effectOptions={hyperspeedOptions} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="lines"
+                className="absolute inset-0"
+                initial={{ opacity: 0, scale: 1.04 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1.6, ease: [0.4, 0, 0.2, 1] }}
+              >
+                <FloatingLines
+                  enabledWaves={['top', 'middle', 'bottom']}
+                  lineCount={8}
+                  lineDistance={8}
+                  bendRadius={8}
+                  bendStrength={-2}
+                  interactive={!reduce}
+                  parallax={!reduce}
+                  animationSpeed={reduce ? 0 : 1}
+                  linesGradient={['#94a3b8', '#6f6f6f', '#6a6a6a']}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </WebGLBoundary>
+      </motion.div>
+
+      <motion.div
+        className="pointer-events-none relative z-10 h-full w-full"
+        style={{
+          scale: parallax.heroContent.scale,
+          y: parallax.heroContent.y,
+          opacity: parallax.heroContent.opacity,
+          filter: parallax.heroContent.filter,
+        }}
+      >
+        <AnimatePresence mode="wait">
+          {phase === 'road' ? (
+            <motion.div
+              key="count"
+              className="flex h-full w-full flex-col items-center justify-center px-6 text-center"
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+            >
+              <div className="flex items-start font-bold leading-none tracking-tight text-white">
+                <span className="text-7xl sm:text-8xl md:text-9xl">
+                  <CountUp
+                    from={0}
+                    to={100}
+                    separator=","
+                    direction="up"
+                    duration={1.5}
+                    delay={0}
+                    onEnd={handleCountEnd}
+                  />
+                </span>
+                <span className="mt-2 text-3xl sm:text-4xl md:text-5xl">%</span>
+              </div>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="mt-4 font-mono text-xs uppercase tracking-[0.3em] text-white/50"
+              >
+                Spooling up
+              </motion.p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="content"
+              className="relative h-full w-full overflow-hidden px-5 pb-8 pt-24 sm:px-8 lg:px-10"
+              initial="hidden"
+              animate="show"
+              variants={{
+                hidden: {},
+                show: { transition: { staggerChildren: 0.08, delayChildren: 0.12 } },
+              }}
+            >
+              <motion.p
+                variants={copyVariant}
+                className="poster-copy pointer-events-auto absolute top-[31%] max-w-[230px] text-left text-xs font-semibold leading-relaxed text-white/78 sm:top-[42%] sm:max-w-[270px] sm:text-sm"
+              >
+                We build embodied intelligence for machines that perceive, move, and adapt in the real world.
+              </motion.p>
+
+              <motion.p
+                variants={copyVariant}
+                className="poster-metric-right absolute top-[14%] hidden text-right text-[clamp(2.35rem,8vw,4.9rem)] font-black leading-none text-white sm:block"
+              >
+                +100
+                <span className="block text-xs font-semibold leading-5 text-white/50 sm:text-sm">launch sequence</span>
+              </motion.p>
+
+              <motion.h1
+                variants={headlineVariant}
+                className="poster-word poster-word-build"
+              >
+                Swink
+              </motion.h1>
+
+              <motion.div
+                variants={headlineVariant}
+                className="poster-word poster-word-your"
+              >
+                coming
+              </motion.div>
+
+              <motion.div
+                variants={headlineVariant}
+                className="poster-word poster-word-ai"
+              >
+                soon
+              </motion.div>
+
+              <motion.div
+                variants={copyVariant}
+                className="poster-metric-left pointer-events-auto absolute top-[69%] hidden text-left sm:block"
+              >
+                <p className="text-[clamp(2.1rem,5vw,4rem)] font-black leading-none text-white">01</p>
+                <p className="mt-1 text-xs font-semibold text-white/42">private preview</p>
+              </motion.div>
+
+              <motion.div
+                variants={copyVariant}
+                className="poster-metric-right pointer-events-auto absolute bottom-[7.2rem] hidden text-right sm:block"
+              >
+                <p className="text-[clamp(2.1rem,5vw,4rem)] font-black leading-none text-white">3</p>
+                <p className="mt-1 text-xs font-semibold text-white/42">core systems</p>
+              </motion.div>
+
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+      <button
+        type="button"
+        onClick={onScrollNext}
+        aria-label="Scroll to next section"
+        className="pointer-events-auto absolute bottom-8 left-1/2 z-20 flex h-10 w-10 -translate-x-1/2 items-center justify-center rounded-full border border-white/20 text-white/70 transition-colors duration-200 hover:border-white/60 hover:text-white"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 5v14M19 12l-7 7-7-7" />
+        </svg>
+      </button>
+    </section>
+  );
+}
