@@ -4,7 +4,6 @@ import CountUp from './CountUp';
 import FloatingLines from './FloatingLines';
 import Hyperspeed from './Hyperspeed';
 import WebGLBoundary from './WebGLBoundary';
-import type { useParallax } from './useParallax';
 
 const HYPERSPEED_OPTIONS = {
   distortion: 'turbulentDistortion',
@@ -44,16 +43,12 @@ const HYPERSPEED_OPTIONS = {
 
 type Phase = 'road' | 'lines';
 
-type HeroProps = {
-  parallax: ReturnType<typeof useParallax>;
-};
-
 const typeIn = {
   hidden: { opacity: 0, y: 34, filter: 'blur(10px)' },
   show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const } },
 };
 
-export default function Hero({ parallax }: HeroProps) {
+export default function Hero() {
   const reduce = useReducedMotion();
   const [phase, setPhase] = useState<Phase>(reduce ? 'lines' : 'road');
 
@@ -67,10 +62,7 @@ export default function Hero({ parallax }: HeroProps) {
 
   return (
     <section className="relative flex h-[100dvh] w-full shrink-0 items-center justify-center overflow-hidden bg-black">
-      <motion.div
-        className="absolute inset-0 z-0"
-        style={{ scale: parallax.heroBg.scale, y: parallax.heroBg.y, filter: parallax.heroBg.filter }}
-      >
+      <motion.div className="absolute inset-0 z-0">
         <WebGLBoundary>
           <AnimatePresence mode="sync">
             {phase === 'road' ? (
@@ -107,15 +99,7 @@ export default function Hero({ parallax }: HeroProps) {
         </WebGLBoundary>
       </motion.div>
 
-      <motion.div
-        className="pointer-events-none relative z-10 h-full w-full"
-        style={{
-          scale: parallax.heroContent.scale,
-          y: parallax.heroContent.y,
-          opacity: parallax.heroContent.opacity,
-          filter: parallax.heroContent.filter,
-        }}
-      >
+      <motion.div className="pointer-events-none relative z-10 h-full w-full">
         <AnimatePresence mode="wait">
           {phase === 'road' ? (
             <motion.div
