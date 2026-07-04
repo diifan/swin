@@ -5,7 +5,8 @@ export default function Nav() {
       aria-label="Brand"
     >
       <p
-        className="select-none font-mono text-[0.66rem] font-medium uppercase leading-none tracking-[0.48em] text-white/42 sm:text-[0.72rem]"
+        className="select-none text-[0.66rem] font-normal uppercase leading-none tracking-[0.36em] text-white/44 sm:text-[0.72rem]"
+        style={{ fontFamily: '"Century Gothic", "AppleGothic", "Avenir Next", Arial, sans-serif' }}
         aria-label="Swink AI Inc."
       >
         &copy; Swink AI Inc.
