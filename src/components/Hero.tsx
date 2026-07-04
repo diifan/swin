@@ -56,7 +56,7 @@ export default function Hero() {
   useEffect(() => {
     if (reduce) return;
 
-    const timeout = window.setTimeout(() => setPhase('lines'), 2100);
+    const timeout = window.setTimeout(() => setPhase('lines'), 1050);
     return () => window.clearTimeout(timeout);
   }, [reduce]);
 
