@@ -3,7 +3,6 @@ import { motion, useReducedMotion, useTransform } from 'motion/react';
 import type { MotionValue } from 'motion/react';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
-import PillarSection from './components/PillarSection';
 import { useParallax } from './components/useParallax';
 
 export default function App() {
@@ -14,9 +13,8 @@ export default function App() {
   return (
     <div className="h-[100dvh] overflow-hidden bg-black text-white">
       <Nav />
-      <main ref={mainRef} className="h-[100dvh] overflow-y-scroll">
+      <main ref={mainRef} className="h-[100dvh] overflow-hidden">
         <Hero parallax={parallax} />
-        <PillarSection parallax={parallax} />
       </main>
 
       <Scrim progress={parallax.progress} />
