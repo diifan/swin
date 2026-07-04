@@ -228,6 +228,18 @@ type FloatingLinesProps = {
   mixBlendMode?: CSSProperties['mixBlendMode'];
 };
 
+const TOUCH_LINE_LIMITS: Record<WaveType, number> = {
+  top: 5,
+  middle: 6,
+  bottom: 5,
+};
+
+function isTouchOptimizedViewport(): boolean {
+  if (typeof window === 'undefined') return false;
+
+  return window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
+}
+
 function hexToVec3(hex: string): Vector3 {
   let value = hex.trim();
 
@@ -276,12 +288,19 @@ export default function FloatingLines({
   const currentInfluenceRef = useRef(0);
   const targetParallaxRef = useRef(new Vector2(0, 0));
   const currentParallaxRef = useRef(new Vector2(0, 0));
+  const touchOptimized = isTouchOptimizedViewport();
+  const effectiveDamping = touchOptimized ? Math.max(mouseDamping, 0.16) : mouseDamping;
+  const effectiveParallax = parallax && !touchOptimized;
 
   const getLineCount = (waveType: WaveType): number => {
-    if (typeof lineCount === 'number') return lineCount;
-    if (!enabledWaves.includes(waveType)) return 0;
-    const index = enabledWaves.indexOf(waveType);
-    return lineCount[index] ?? 6;
+    const count =
+      typeof lineCount === 'number'
+        ? lineCount
+        : enabledWaves.includes(waveType)
+          ? (lineCount[enabledWaves.indexOf(waveType)] ?? 6)
+          : 0;
+
+    return touchOptimized ? Math.min(count, TOUCH_LINE_LIMITS[waveType]) : count;
   };
 
   const getLineDistance = (waveType: WaveType): number => {
@@ -310,10 +329,11 @@ export default function FloatingLines({
     const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
     camera.position.z = 1;
 
-    const renderer = new WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const renderer = new WebGLRenderer({ antialias: !touchOptimized, alpha: false, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, touchOptimized ? 1.35 : 2));
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
+    renderer.domElement.style.touchAction = 'none';
     container.appendChild(renderer.domElement);
 
     const uniforms = {
@@ -357,7 +377,7 @@ export default function FloatingLines({
       bendStrength: { value: bendStrength },
       bendInfluence: { value: 0 },
 
-      parallax: { value: parallax },
+      parallax: { value: effectiveParallax },
       parallaxStrength: { value: parallaxStrength },
       parallaxOffset: { value: new Vector2(0, 0) },
 
@@ -388,6 +408,7 @@ export default function FloatingLines({
     scene.add(mesh);
 
     const clock = new Clock();
+    let bounds = renderer.domElement.getBoundingClientRect();
 
     const setSize = () => {
       if (!active) return;
@@ -399,6 +420,7 @@ export default function FloatingLines({
       const canvasWidth = renderer.domElement.width;
       const canvasHeight = renderer.domElement.height;
       uniforms.iResolution.value.set(canvasWidth, canvasHeight, 1);
+      bounds = renderer.domElement.getBoundingClientRect();
     };
 
     setSize();
@@ -413,30 +435,51 @@ export default function FloatingLines({
 
     if (ro) ro.observe(container);
 
-    const handlePointerMove = (event: PointerEvent) => {
-      const rect = renderer.domElement.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
+    let pointerRaf = 0;
+    let latestPointer: PointerEvent | null = null;
+
+    const applyPointer = (event: PointerEvent) => {
+      const x = event.clientX - bounds.left;
+      const y = event.clientY - bounds.top;
       const dpr = renderer.getPixelRatio();
 
-      targetMouseRef.current.set(x * dpr, (rect.height - y) * dpr);
+      targetMouseRef.current.set(x * dpr, (bounds.height - y) * dpr);
       targetInfluenceRef.current = 1.0;
 
-      if (parallax) {
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const offsetX = (x - centerX) / rect.width;
-        const offsetY = -(y - centerY) / rect.height;
+      if (effectiveParallax) {
+        const centerX = bounds.width / 2;
+        const centerY = bounds.height / 2;
+        const offsetX = (x - centerX) / bounds.width;
+        const offsetY = -(y - centerY) / bounds.height;
         targetParallaxRef.current.set(offsetX * parallaxStrength, offsetY * parallaxStrength);
       }
     };
 
+    const handlePointerMove = (event: PointerEvent) => {
+      latestPointer = event;
+
+      if (pointerRaf) return;
+
+      pointerRaf = requestAnimationFrame(() => {
+        pointerRaf = 0;
+        if (latestPointer) applyPointer(latestPointer);
+      });
+    };
+
+    const handlePointerEnter = () => {
+      bounds = renderer.domElement.getBoundingClientRect();
+    };
+
     const handlePointerLeave = () => {
       targetInfluenceRef.current = 0.0;
+      targetParallaxRef.current.set(0, 0);
     };
 
     if (interactive) {
-      window.addEventListener('pointermove', handlePointerMove);
+      container.addEventListener('pointerenter', handlePointerEnter, { passive: true });
+      container.addEventListener('pointermove', handlePointerMove, { passive: true });
+      container.addEventListener('pointerleave', handlePointerLeave, { passive: true });
+      container.addEventListener('pointercancel', handlePointerLeave, { passive: true });
       document.addEventListener('mouseleave', handlePointerLeave);
     }
 
@@ -447,15 +490,15 @@ export default function FloatingLines({
       uniforms.iTime.value = clock.getElapsedTime();
 
       if (interactive) {
-        currentMouseRef.current.lerp(targetMouseRef.current, mouseDamping);
+        currentMouseRef.current.lerp(targetMouseRef.current, effectiveDamping);
         uniforms.iMouse.value.copy(currentMouseRef.current);
 
-        currentInfluenceRef.current += (targetInfluenceRef.current - currentInfluenceRef.current) * mouseDamping;
+        currentInfluenceRef.current += (targetInfluenceRef.current - currentInfluenceRef.current) * effectiveDamping;
         uniforms.bendInfluence.value = currentInfluenceRef.current;
       }
 
-      if (parallax) {
-        currentParallaxRef.current.lerp(targetParallaxRef.current, mouseDamping);
+      if (effectiveParallax) {
+        currentParallaxRef.current.lerp(targetParallaxRef.current, effectiveDamping);
         uniforms.parallaxOffset.value.copy(currentParallaxRef.current);
       }
 
@@ -470,9 +513,13 @@ export default function FloatingLines({
       cancelAnimationFrame(raf);
 
       if (ro) ro.disconnect();
+      if (pointerRaf) cancelAnimationFrame(pointerRaf);
 
       if (interactive) {
-        window.removeEventListener('pointermove', handlePointerMove);
+        container.removeEventListener('pointerenter', handlePointerEnter);
+        container.removeEventListener('pointermove', handlePointerMove);
+        container.removeEventListener('pointerleave', handlePointerLeave);
+        container.removeEventListener('pointercancel', handlePointerLeave);
         document.removeEventListener('mouseleave', handlePointerLeave);
       }
 

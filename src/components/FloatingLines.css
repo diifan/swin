@@ -3,4 +3,9 @@
   height: 100%;
   position: relative;
   overflow: hidden;
+  contain: layout paint size;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
