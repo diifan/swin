@@ -142,10 +142,14 @@ export default function Hero() {
                 show: { transition: { staggerChildren: 0.08, delayChildren: 0.12 } },
               }}
             >
-              <motion.h1 variants={headlineVariant} className="launch-title" aria-label="Swink coming soon">
-                <span>Swink</span>
-                <span>coming soon</span>
-              </motion.h1>
+              <motion.div variants={headlineVariant} className="launch-copy" aria-label="SWI is. Coming soon. Stay tuned.">
+                <p className="launch-pretext">SWI is</p>
+                <h1 className="launch-title">
+                  <span>Coming</span>
+                  <span>Soon</span>
+                </h1>
+                <p className="launch-subtext">Stay tuned</p>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
