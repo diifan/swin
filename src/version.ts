@@ -27,6 +27,9 @@ async function checkVersion(): Promise<void> {
 
 export function setupVersionCheck(): void {
   if (typeof window === 'undefined') return;
+  // Check immediately on load — catches a stale cached bundle right away instead
+  // of waiting for the first visibility/interval tick.
+  void checkVersion();
   // Re-check when the user returns to the tab.
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') void checkVersion();
