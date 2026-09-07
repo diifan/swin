@@ -25,9 +25,9 @@ export default function Hero() {
           <motion.div
             variants={headlineVariant}
             className="launch-copy"
-            aria-label="SWI is. Coming soon. Stay tuned."
+            aria-label="SWIE is. Coming soon. Stay tuned."
           >
-            <p className="launch-pretext">SWI is</p>
+            <p className="launch-pretext">SWIE is</p>
             <h1 className="launch-title">
               <span>Coming</span>
               <span>Soon</span>

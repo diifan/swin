@@ -32,9 +32,9 @@ export default function Nav({ activePage }: { activePage?: LegalDocument }) {
       </nav>
 
       <a
-        href="mailto:hello@goswi.ai"
+        href="mailto:hello@goswie.com"
         className="site-meta site-link inline-flex items-center gap-2"
-        aria-label="Email Swink AI Inc. at hello@goswi.ai"
+        aria-label="Email Swink AI Inc. at hello@goswie.com"
       >
         <svg
           aria-hidden="true"
@@ -46,7 +46,7 @@ export default function Nav({ activePage }: { activePage?: LegalDocument }) {
           <rect x="1.5" y="3" width="13" height="10" rx="1.5" />
           <path d="m2.25 4.25 5.12 4.08a1 1 0 0 0 1.26 0l5.12-4.08" />
         </svg>
-        <span>hello@goswi.ai</span>
+        <span>hello@goswie.com</span>
       </a>
       </footer>
     </>
