@@ -2,8 +2,8 @@
 
 **Effective date:** 2026-09-07
 **Provider:** Swink AI Inc. ("we", "us", "SWIE")
-**Contact:** hello@goswie.com
-**Website:** https://goswie.com
+**Contact:** [hello@goswie.com](mailto:hello@goswie.com)
+**Website:** [goswie.com](https://goswie.com)
 
 SWIE is an on-device golf swing analysis app. This policy explains what we collect, why, and your choices.
 
