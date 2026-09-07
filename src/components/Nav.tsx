@@ -1,13 +1,30 @@
-export default function Nav() {
+import type { LegalDocument } from './LegalPage';
+
+export default function Nav({ activePage }: { activePage?: LegalDocument }) {
   return (
     <>
+      <header className={`site-header${activePage ? ' site-header--privacy' : ''}`}>
+        {activePage && (
+          <a href="/" className="site-meta site-link site-home" aria-label="HOME">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className="site-home-mark">
+              <path d="M5.5 1.5h-4v4m9-4h4v4m0 5v4h-4m-5 0h-4v-4" />
+              <path d="m8 5 3 3-3 3-3-3Z" />
+            </svg>
+            <span>HOME</span>
+          </a>
+        )}
+        <nav className="site-legal-links" aria-label="Legal">
+          <a href="/terms" className="site-meta site-link" aria-current={activePage === 'terms' ? 'page' : undefined}>TERMS</a>
+          <a href="/privacy" className="site-meta site-link" aria-current={activePage === 'privacy' ? 'page' : undefined}>PRIVACY</a>
+        </nav>
+      </header>
+      <footer className={`site-footer${activePage ? ' site-footer--privacy' : ''}`}>
       <nav
-        className="pointer-events-none fixed bottom-[calc(env(safe-area-inset-bottom)+24px)] left-6 z-30 lg:bottom-[calc(env(safe-area-inset-bottom)+36px)] lg:left-[60px]"
+        className="pointer-events-none"
         aria-label="Brand"
       >
         <p
-          className="select-none text-[11px] font-light uppercase leading-none tracking-[1.5px] text-white/50"
-          style={{ fontFamily: 'Inter, "Geist Variable", -apple-system, BlinkMacSystemFont, sans-serif' }}
+          className="site-meta select-none uppercase"
           aria-label="Swink AI Inc."
         >
           &copy; Swink AI Inc.
@@ -16,8 +33,7 @@ export default function Nav() {
 
       <a
         href="mailto:hello@goswi.ai"
-        className="pointer-events-auto fixed bottom-[calc(env(safe-area-inset-bottom)+24px)] right-6 z-30 inline-flex items-center gap-2 text-[11px] font-light leading-none tracking-[1.5px] text-white/50 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/70 lg:bottom-[calc(env(safe-area-inset-bottom)+36px)] lg:right-[60px]"
-        style={{ fontFamily: 'Inter, "Geist Variable", -apple-system, BlinkMacSystemFont, sans-serif' }}
+        className="site-meta site-link inline-flex items-center gap-2"
         aria-label="Email Swink AI Inc. at hello@goswi.ai"
       >
         <svg
@@ -32,6 +48,7 @@ export default function Nav() {
         </svg>
         <span>hello@goswi.ai</span>
       </a>
+      </footer>
     </>
   );
 }

@@ -24,7 +24,7 @@ export default class WebGLBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        this.props.fallback ?? (
+        this.props.fallback !== undefined ? this.props.fallback : (
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_60%,rgba(216,86,191,0.12),transparent_60%)] bg-black" />
         )
       );

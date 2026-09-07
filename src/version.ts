@@ -17,6 +17,16 @@ async function checkVersion(): Promise<void> {
     const data = (await res.json()) as { version?: string };
     if (typeof data.version === 'string' && data.version !== __APP_VERSION__) {
       if (reloading) return;
+      // A stale HTML response may survive a reload. Never reload repeatedly for
+      // the same target version in this tab; leave the usable page visible.
+      const key = 'swi:last-version-reload';
+      try {
+        if (sessionStorage.getItem(key) === data.version) return;
+        sessionStorage.setItem(key, data.version);
+      } catch {
+        // Without persistent tab storage we cannot safely prevent a reload loop.
+        return;
+      }
       reloading = true;
       window.location.reload();
     }
@@ -27,6 +37,7 @@ async function checkVersion(): Promise<void> {
 
 export function setupVersionCheck(): void {
   if (typeof window === 'undefined') return;
+  if (import.meta.env.DEV) return;
   // Check immediately on load — catches a stale cached bundle right away instead
   // of waiting for the first visibility/interval tick.
   void checkVersion();
