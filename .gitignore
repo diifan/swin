@@ -8,3 +8,4 @@ dist
 .edge-*
 tsconfig.tsbuildinfo
 .env*
+.playwright-cli/

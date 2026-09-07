@@ -33,6 +33,134 @@
 }
 
 @layer components {
+  .site-meta {
+    font-family: Inter, "Geist Variable", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 11px;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: 1.5px;
+    color: rgb(255 255 255 / 0.5);
+  }
+
+  .site-link { transition: color 200ms; }
+  .site-home { display: inline-flex; align-items: center; gap: 10px; }
+  .site-home-mark { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1; }
+  #main-content:focus { outline: none; }
+  .site-link:hover, .site-link[aria-current="page"] { color: white; }
+  .site-link:focus-visible, .privacy-main a:focus-visible {
+    outline: 1px solid rgb(255 255 255 / 0.7);
+    outline-offset: 6px;
+  }
+
+  .site-header, .site-footer {
+    position: fixed;
+    left: max(24px, env(safe-area-inset-left));
+    right: max(24px, env(safe-area-inset-right));
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .site-header { top: calc(env(safe-area-inset-top) + 24px); }
+  .site-legal-links { margin-left: auto; display: flex; align-items: center; gap: 24px; }
+  .site-footer { bottom: calc(env(safe-area-inset-bottom) + 24px); flex-wrap: wrap; }
+  .site-footer > a { margin-left: auto; }
+  .site-header--privacy::before {
+    content: '';
+    position: absolute;
+    inset: -60px -60px -24px;
+    background: linear-gradient(#080808 60%, transparent);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .privacy-page {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: #080808;
+    color: white;
+  }
+  .site-background { position: fixed; inset: 0; z-index: 0; background: black; }
+  .site-background--subdued { pointer-events: none; }
+  .site-background--subdued > div { opacity: 0.3; }
+  .site-background-fallback {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(155deg, transparent 35%, #35383b 49%, #141516 52%, transparent 66%);
+  }
+  .site-background--subdued::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgb(8 8 8 / 0.8) 25%, rgb(8 8 8 / 0.8) 75%, transparent);
+  }
+  .privacy-main {
+    position: relative;
+    z-index: 1;
+    order: 1;
+    width: min(100%, 848px);
+    margin: 0 auto;
+    padding: 132px 24px 80px;
+    font-family: Inter, "Geist Variable", sans-serif;
+  }
+  .privacy-eyebrow {
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    color: rgb(255 255 255 / 0.5);
+    margin-bottom: 24px;
+  }
+  .privacy-copy { font-size: 15px; line-height: 1.9; color: #bcbcbc; overflow-wrap: anywhere; }
+  .privacy-copy h1 {
+    font-size: clamp(36px, 5vw, 60px);
+    line-height: 1.15;
+    font-weight: 200;
+    letter-spacing: -0.025em;
+    color: white;
+    margin-bottom: 32px;
+  }
+  .privacy-copy h2 {
+    border-top: 1px solid rgb(255 255 255 / 0.14);
+    padding-top: 32px;
+    margin: 48px 0 20px;
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1.4;
+    color: #eee;
+  }
+  .privacy-copy p { margin: 16px 0; white-space: pre-line; }
+  .privacy-copy strong { font-weight: 400; color: #eee; }
+  .privacy-copy ul { list-style: disc; padding-left: 22px; margin: 16px 0; }
+  .privacy-copy li { padding-left: 6px; margin: 10px 0; }
+  .privacy-copy li::marker { color: #777; }
+  .privacy-copy a { color: #eee; text-decoration: underline; text-underline-offset: 4px; }
+  .privacy-copy a:hover { color: white; }
+  .privacy-contact {
+    display: inline-block;
+    margin-top: 32px;
+    font-size: 13px;
+    color: #ddd;
+    text-underline-offset: 6px;
+    text-decoration: underline;
+  }
+  .site-footer--privacy {
+    position: relative;
+    order: 2;
+    inset: auto;
+    margin: auto 24px 0;
+    padding: 24px 0 calc(env(safe-area-inset-bottom) + 24px);
+    border-top: 1px solid rgb(255 255 255 / 0.12);
+  }
+  @media (min-width: 1024px) {
+    .site-header, .site-footer { left: 60px; right: 60px; }
+    .site-header { top: calc(env(safe-area-inset-top) + 36px); }
+    .site-footer { bottom: calc(env(safe-area-inset-bottom) + 36px); }
+    .site-footer--privacy { inset: auto; margin-inline: 60px; }
+    .privacy-main { padding-top: 160px; }
+  }
+
   .launch-copy {
     position: absolute;
     left: 50%;

@@ -1,6 +1,4 @@
 import { motion, useReducedMotion } from 'motion/react';
-import FloatingLines from './FloatingLines';
-import WebGLBoundary from './WebGLBoundary';
 
 const typeIn = {
   hidden: { opacity: 0, y: 34, filter: 'blur(10px)' },
@@ -12,34 +10,12 @@ export default function Hero() {
   const headlineVariant = reduce ? { hidden: {}, show: { opacity: 1 } } : typeIn;
 
   return (
-    <section className="relative flex h-[100dvh] w-full shrink-0 items-center justify-center overflow-hidden bg-black">
-      <motion.div className="absolute inset-0 z-0">
-        <WebGLBoundary>
-          <motion.div
-            className="absolute inset-0"
-            initial={reduce ? false : { opacity: 0, scale: 1.02 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
-          >
-            <FloatingLines
-              enabledWaves={['top', 'middle', 'bottom']}
-              lineCount={8}
-              lineDistance={8}
-              bendRadius={8}
-              bendStrength={-2}
-              interactive={!reduce}
-              parallax={!reduce}
-              animationSpeed={reduce ? 0 : 1}
-              linesGradient={['#94a3b8', '#6f6f6f', '#6a6a6a']}
-            />
-          </motion.div>
-        </WebGLBoundary>
-      </motion.div>
+    <section className="relative flex h-[100dvh] w-full shrink-0 items-center justify-center overflow-hidden">
 
       <motion.div className="pointer-events-none relative z-10 h-full w-full">
         <motion.div
           className="relative h-full w-full overflow-hidden px-5 pb-8 pt-24 sm:px-8 lg:px-10"
-          initial="hidden"
+          initial={false}
           animate="show"
           variants={{
             hidden: {},
