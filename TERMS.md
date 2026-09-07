@@ -95,6 +95,6 @@ If a provision is held unenforceable, the remaining provisions continue to apply
 
 ## 13. Contact
 
-For questions about these Terms, account access, or a concern about rights in content, email [hello@goswie.com](mailto:hello@goswie.com). Please describe the issue and include only the information needed for us to help. For personal-data requests, use [hello@goswie.com](mailto:hello@goswie.com).
+For questions about these Terms, account access, content rights, or personal-data requests, contact us at [hello@goswie.com](mailto:hello@goswie.com). Please describe the issue and include only the information needed for us to help.
 
 We encourage you to contact us to try to resolve concerns. Nothing in these Terms prevents you from using courts or other remedies available under applicable law.

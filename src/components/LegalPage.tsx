@@ -9,7 +9,7 @@ export default function LegalPage({ document: kind }: { document: LegalDocument 
   const title = kind === 'terms' ? 'Terms of Use' : 'Privacy Policy';
   useEffect(() => {
     const previous = document.title;
-    document.title = `${title} — SWIE | Swink AI Inc.`;
+    document.title = `SWIE | Self in the World, as Image.`;
     return () => { document.title = previous; };
   }, [title]);
 
