@@ -9,18 +9,18 @@ export default function LegalPage({ document: kind }: { document: LegalDocument 
   const title = kind === 'terms' ? 'Terms of Use' : 'Privacy Policy';
   useEffect(() => {
     const previous = document.title;
-    document.title = `${title} — Swie | Swink AI Inc.`;
+    document.title = `${title} — SWIE | Swink AI Inc.`;
     return () => { document.title = previous; };
   }, [title]);
 
   return (
     <>
       <main id="main-content" tabIndex={-1} className="privacy-main">
-        <p className="privacy-eyebrow">SWINK AI INC. / LEGAL</p>
+        <p className="privacy-eyebrow">SWIE / SWINK AI INC. / LEGAL</p>
         <article className="privacy-copy">
           <Markdown skipHtml>{kind === 'terms' ? terms : privacy}</Markdown>
         </article>
-        <a className="privacy-contact" href={kind === 'terms' ? 'mailto:hello@goswi.ai' : 'mailto:yiping.zhao@goswi.ai'}>
+        <a className="privacy-contact" href="mailto:hello@goswie.com">
           {kind === 'terms' ? 'Questions about these terms' : 'Contact us about your privacy'} ↗
         </a>
       </main>

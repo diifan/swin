@@ -35,7 +35,7 @@ export default function App() {
         <SiteBackground />
       </div>
       <Nav activePage={legalDocument} />
-      {legalDocument ? <LegalPage document={legalDocument} /> : <main id="main-content" tabIndex={-1} className="relative z-10 h-[100dvh] overflow-hidden"><Hero /></main>}
+      {legalDocument ? <LegalPage document={legalDocument} /> : <main id="main-content" tabIndex={-1} className="home-main relative z-10 h-[100dvh] overflow-hidden"><Hero /></main>}
     </div>
   );
 }

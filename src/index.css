@@ -83,6 +83,7 @@
     color: white;
   }
   .site-background { position: fixed; inset: 0; z-index: 0; background: black; }
+  .home-main { pointer-events: none; }
   .site-background--subdued { pointer-events: none; }
   .site-background--subdued > div { opacity: 0.3; }
   .site-background-fallback {

@@ -19,7 +19,7 @@ async function checkVersion(): Promise<void> {
       if (reloading) return;
       // A stale HTML response may survive a reload. Never reload repeatedly for
       // the same target version in this tab; leave the usable page visible.
-      const key = 'swi:last-version-reload';
+      const key = 'swie:last-version-reload';
       try {
         if (sessionStorage.getItem(key) === data.version) return;
         sessionStorage.setItem(key, data.version);
