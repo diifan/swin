@@ -62,7 +62,8 @@
     justify-content: space-between;
     gap: 16px;
   }
-  .site-header { top: calc(env(safe-area-inset-top) + 24px); }
+  .site-header { top: calc(env(safe-area-inset-top) + 24px); flex-wrap: wrap; }
+  .site-app-links { display: flex; align-items: center; gap: 24px; }
   .site-legal-links { margin-left: auto; display: flex; align-items: center; gap: 24px; }
   .site-footer { bottom: calc(env(safe-area-inset-bottom) + 24px); flex-wrap: wrap; }
   .site-footer > a { margin-left: auto; }
