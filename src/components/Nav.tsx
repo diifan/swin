@@ -14,8 +14,9 @@ export default function Nav({ activePage }: { activePage?: LegalDocument }) {
               <span>HOME</span>
             </a>
           )}
-          <a href="https://hoopcut.ai/" className="site-meta site-link">HOOPCUT</a>
           <a href="https://acecut.goswie.com/" className="site-meta site-link">ACECUT</a>
+          <a href="https://golfcut.goswie.com/" className="site-meta site-link">GOLFCUT</a>
+          <a href="https://hoopcut.ai/" className="site-meta site-link">HOOPCUT</a>
         </nav>
         <nav className="site-legal-links" aria-label="Legal">
           <a href="/terms" className="site-meta site-link" aria-current={activePage === 'terms' ? 'page' : undefined}>TERMS</a>
