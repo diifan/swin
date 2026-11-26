@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {prepare,replyWritingStyle} from '../server/wingman-worker.mjs';
+const preferences={source:'explicit_preferences',sample_count:0,habits:{},wording_preferences:'Short, warm replies'};
+const sample={id:'one',messages:[{speaker:'them',text:'Not my words'},{speaker:'me',text:'yeah!! sounds great'},{speaker:'me',text:'quoted',quoted:true}]};
+const p=prepare('/v1/style',{samples:[sample],previous_style:preferences});
+const data=JSON.parse(p.messages[1].content);
+assert.deepEqual(data.new_user_samples[0].my_messages,['yeah!! sounds great']);
+assert.equal(p.context.sample_count,1);assert.equal(data.previous_profile,null);assert.equal(data.explicit_preferences,'Short, warm replies');
+assert.throws(()=>prepare('/v1/style',{samples:[]}));
+assert.throws(()=>prepare('/v1/style',{samples:[{id:'a',messages:[{speaker:'them',text:'Only theirs'}]}]}));
+assert.throws(()=>prepare('/v1/style',{samples:[sample,sample]}));
+const habits=Object.fromEntries(['tone','word_choice','length','line_breaks','punctuation','capitalization','emoji','language'].map(k=>[k,'Limited evidence']));
+assert(replyWritingStyle({source:'screenshots',sample_count:1,habits,summary:'Initial observations'}));
+assert.throws(()=>replyWritingStyle({source:'chat',sample_count:1,habits}));
+console.log('PASS: one real screenshot, quote/other exclusion, honest count, preference-only upgrade, invalid evidence rejection');

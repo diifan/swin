@@ -14,17 +14,18 @@ export async function acquireCooldown(bearer,env,fetcher=fetch) {
     return rows[0];
   } catch {throw unavailable();}
 }
-export async function localReplies(payload,auth,plan,env=process.env,dependencies={}) {
+export async function localReplies(payload,auth,plan,env=process.env,dependencies={},path='/v1/replies') {
   try {
     if(!/^Bearer [A-Za-z0-9_-]{43}$/.test(auth??''))throw new Fault(401,'invalid_installation','Please reopen WingMan and try again.');
     if(payload.plan==='pro'||plan==='pro')throw new Fault(503,'pro_unavailable','WingMan Pro is not available yet.');
     if(env.ENFORCE_FREE_LIMITS==='true'||!env.QWEN_API_KEY||!env.QWEN_URL)throw unavailable();
-    const prepared=prepare('/v1/replies',payload);
+    if(!['/v1/style','/v1/replies'].includes(path))throw unavailable();
+    const prepared=prepare(path,payload);
     const url=new URL(env.QWEN_URL);
     if(url.protocol!=='https:'||url.username||url.password||!(url.hostname==='dashscope.aliyuncs.com'||url.hostname.endsWith('.cn-beijing.maas.aliyuncs.com')))throw unavailable();
     const gate=await (dependencies.acquire??acquireCooldown)(auth.slice(7),env);
     if(!gate.allowed)throw Object.assign(new Fault(429,'retry_cooldown','Please wait a few seconds before trying again.'),{retryAfter:Math.max(1,Math.ceil(gate.retry_after_ms/1000))});
-    const result=await (dependencies.run??runModel)(url,env,prepared,'/v1/replies',payload);
+    const result=await (dependencies.run??runModel)(url,env,prepared,path,payload);
     return {status:200,body:{...result,allowance:{unlimited:true}}};
   } catch(error) {
     const known=error instanceof Fault;

@@ -13,8 +13,8 @@ export default async function handler(req,res) {
   if(req.method==='POST'&&!/^Bearer [A-Za-z0-9_-]{43}$/.test(auth))return fail(401,'invalid_installation','Please reopen WingMan and try again.');
   const body=req.method==='POST'?JSON.stringify(req.body):undefined;
   if(body&&Buffer.byteLength(body)>600000)return fail(413,'too_large','Input is too large.');
-  if(route==='replies' && process.env.WM_REPLIES_LOCAL_PREFS==='on' && isPreferencesOnly(req.body?.style)) {
-    const result=await localReplies(req.body,auth,req.headers['x-wingman-plan']);
+  if(process.env.WM_REPLIES_LOCAL_PREFS==='on' && (route==='style' || (route==='replies' && (isPreferencesOnly(req.body?.style) || (req.body?.style?.source==='screenshots' && req.body?.style?.sample_count < 3))))) {
+    const result=await localReplies(req.body,auth,req.headers['x-wingman-plan'],process.env,{},'/v1/'+route);
     res.setHeader('X-Content-Type-Options','nosniff');
     return res.status(result.status).json({...result.body,request_id:id});
   }
