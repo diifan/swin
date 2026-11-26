@@ -1,3 +1,4 @@
+import {localReplies, isPreferencesOnly} from '../server/wingman-preferences.mjs';
 import {randomUUID} from 'node:crypto';
 const origin='https://wingman-ai-gateway.chrischankris.chatgpt.site';
 const routes=new Set(['style-chat','style','replies','person-summary','prepare','validate']);
@@ -12,6 +13,11 @@ export default async function handler(req,res) {
   if(req.method==='POST'&&!/^Bearer [A-Za-z0-9_-]{43}$/.test(auth))return fail(401,'invalid_installation','Please reopen WingMan and try again.');
   const body=req.method==='POST'?JSON.stringify(req.body):undefined;
   if(body&&Buffer.byteLength(body)>600000)return fail(413,'too_large','Input is too large.');
+  if(route==='replies' && process.env.WM_REPLIES_LOCAL_PREFS==='on' && isPreferencesOnly(req.body?.style)) {
+    const result=await localReplies(req.body,auth,req.headers['x-wingman-plan']);
+    res.setHeader('X-Content-Type-Options','nosniff');
+    return res.status(result.status).json({...result.body,request_id:id});
+  }
   try {
     const upstream=await fetch(origin+'/v1/'+route,{method:req.method,redirect:'manual',headers:{'Content-Type':'application/json',...(auth?{Authorization:auth}:{}),...(req.headers['x-wingman-plan']?{'X-WingMan-Plan':req.headers['x-wingman-plan']}:{})},body,signal:AbortSignal.timeout(265000)});
     if(!upstream.headers.get('content-type')?.includes('application/json')) {
